@@ -1,1 +1,2 @@
 # task-management-app
+This Task Management Application is a simple and user-friendly web application designed to help users organize and manage their daily tasks. Users can add new tasks, edit existing tasks, mark tasks as completed, and delete tasks when they are no longer needed. The application is built using HTML, CSS, and JavaScript, providing a responsive and efficient task management experience. It also uses Local Storage to save tasks, ensuring that task data remains available even after the browser is refreshed.
