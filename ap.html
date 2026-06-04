@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Management App</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f4f4;
+    padding:20px;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.input-group{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+input{
+    flex:1;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:5px;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    background:#007bff;
+    color:white;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#0056b3;
+}
+
+.task{
+    background:#f9f9f9;
+    padding:15px;
+    margin-bottom:10px;
+    border-radius:5px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.completed{
+    text-decoration:line-through;
+    color:green;
+}
+
+.actions button{
+    margin-left:5px;
+}
+
+.complete-btn{
+    background:green;
+}
+
+.edit-btn{
+    background:orange;
+}
+
+.delete-btn{
+    background:red;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Task Management Application</h1>
+
+    <div class="input-group">
+        <input type="text" id="taskInput" placeholder="Enter Task">
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <div id="taskList"></div>
+</div>
+
+<script>
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+function saveTasks() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+function renderTasks() {
+    const taskList = document.getElementById("taskList");
+    taskList.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+        taskList.innerHTML += `
+        <div class="task">
+            <span class="${task.completed ? 'completed' : ''}">
+                ${task.name}
+            </span>
+
+            <div class="actions">
+                <button class="complete-btn"
+                    onclick="toggleTask(${index})">
+                    ${task.completed ? 'Undo' : 'Done'}
+                </button>
+
+                <button class="edit-btn"
+                    onclick="editTask(${index})">
+                    Edit
+                </button>
+
+                <button class="delete-btn"
+                    onclick="deleteTask(${index})">
+                    Delete
+                </button>
+            </div>
+        </div>
+        `;
+    });
+}
+
+function addTask() {
+    const input = document.getElementById("taskInput");
+    const taskName = input.value.trim();
+
+    if(taskName === ""){
+        alert("Enter a task");
+        return;
+    }
+
+    tasks.push({
+        name: taskName,
+        completed: false
+    });
+
+    saveTasks();
+    renderTasks();
+    input.value = "";
+}
+
+function toggleTask(index) {
+    tasks[index].completed = !tasks[index].completed;
+    saveTasks();
+    renderTasks();
+}
+
+function editTask(index) {
+    const newTask = prompt("Edit Task", tasks[index].name);
+
+    if(newTask !== null && newTask.trim() !== ""){
+        tasks[index].name = newTask;
+        saveTasks();
+        renderTasks();
+    }
+}
+
+function deleteTask(index) {
+    tasks.splice(index, 1);
+    saveTasks();
+    renderTasks();
+}
+
+renderTasks();
+</script>
+
+</body>
+</html>
