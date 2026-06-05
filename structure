@@ -1,0 +1,210 @@
+For a Task Management Application, you can build a full-stack project using:
+•	Frontend: HTML, CSS, JavaScript (or React) 
+•	Backend: Node.js + Express 
+•	Database: MongoDB 
+•	Authentication: JWT (JSON Web Token) 
+________________________________________
+Project Structure
+task-manager/
+│
+├── client/
+│   ├── index.html
+│   ├── css/
+│   ├── js/
+│
+├── server/
+│   ├── models/
+│   │   ├── User.js
+│   │   └── Task.js
+│   │
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   └── taskRoutes.js
+│   │
+│   ├── middleware/
+│   │   └── auth.js
+│   │
+│   ├── server.js
+│   └── .env
+│
+└── package.json
+________________________________________
+Features
+1. User Authentication
+Register
+POST /api/register
+Request:
+{
+  "name":"Sanjay",
+  "email":"sanjay@gmail.com",
+  "password":"123456"
+}
+Login
+POST /api/login
+Request:
+{
+  "email":"sanjay@gmail.com",
+  "password":"123456"
+}
+Response:
+{
+  "token":"JWT_TOKEN"
+}
+________________________________________
+2. Task CRUD Operations
+Create Task
+POST /api/tasks
+{
+  "title":"Complete Project",
+  "description":"Finish task manager app"
+}
+________________________________________
+Get All Tasks
+GET /api/tasks
+________________________________________
+Update Task
+PUT /api/tasks/:id
+{
+  "title":"Updated Task",
+  "status":"Completed"
+}
+________________________________________
+Delete Task
+DELETE /api/tasks/:id
+________________________________________
+MongoDB Models
+User Model
+const mongoose = require("mongoose");
+
+const UserSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  password: String
+});
+
+module.exports = mongoose.model("User", UserSchema);
+________________________________________
+Task Model
+const mongoose = require("mongoose");
+
+const TaskSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  status: {
+    type: String,
+    default: "Pending"
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+module.exports = mongoose.model("Task", TaskSchema);
+________________________________________
+JWT Authentication Middleware
+const jwt = require("jsonwebtoken");
+
+module.exports = (req, res, next) => {
+  const token = req.header("Authorization");
+
+  if (!token)
+    return res.status(401).json({
+      msg: "Access Denied"
+    });
+
+  try {
+    const verified = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    req.user = verified;
+    next();
+  } catch {
+    res.status(400).json({
+      msg: "Invalid Token"
+    });
+  }
+};
+________________________________________
+Frontend Design
+Dashboard
+<div class="container">
+    <h1>Task Manager</h1>
+
+    <input
+        type="text"
+        id="taskInput"
+        placeholder="Enter Task"
+    >
+
+    <button>Add Task</button>
+
+    <div class="task-list">
+        <div class="task-card">
+            <h3>Learn Node.js</h3>
+            <p>Status: Pending</p>
+
+            <button>Edit</button>
+            <button>Delete</button>
+        </div>
+    </div>
+</div>
+________________________________________
+CSS
+body{
+    font-family: Arial;
+    margin:0;
+    background:#f4f4f4;
+}
+
+.container{
+    width:90%;
+    max-width:700px;
+    margin:auto;
+}
+
+.task-card{
+    background:white;
+    padding:15px;
+    margin:10px 0;
+    border-radius:8px;
+}
+________________________________________
+Optional Real-Time Updates
+Using Socket.IO:
+io.on("connection", (socket) => {
+  console.log("User Connected");
+
+  socket.on("taskAdded", (task) => {
+    io.emit("newTask", task);
+  });
+});
+Whenever a task is added, updated, or deleted, all connected users see changes instantly.
+________________________________________
+Database Schema
+User
+ ├── _id
+ ├── name
+ ├── email
+ └── password
+
+Task
+ ├── _id
+ ├── title
+ ├── description
+ ├── status
+ ├── createdAt
+ └── userId
+________________________________________
+Expected Outcome
+By completing this project, you will learn:
+•	User Authentication (JWT) 
+•	REST API Development 
+•	CRUD Operations 
+•	MongoDB Integration 
+•	Frontend–Backend Communication 
+•	Responsive UI Design 
+•	Real-Time Updates using Socket.IO 
+•	Full-Stack Application Developm
